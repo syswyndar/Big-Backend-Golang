@@ -4,6 +4,7 @@ import (
 	"Big-Backend-Golang/helpers"
 	"Big-Backend-Golang/models"
 	"Big-Backend-Golang/repository"
+	"Big-Backend-Golang/request"
 	"fmt"
 	"net/http"
 
@@ -23,8 +24,8 @@ func Register(c *gin.Context) {
 		for _, err := range err.(validator.ValidationErrors) {
 			errorMessage := fmt.Sprintf("Error on field %s, condition %s", err.Field(), err.ActualTag())
 			c.JSON(http.StatusBadRequest, errorMessage)
-			return
 		}
+		return
 	}
 
 	//hashing password
@@ -65,7 +66,57 @@ func Register(c *gin.Context) {
 	})
 }
 
-// func Login (c *gin.Context) {
-// 	var input request.RegisterRequest
+func Login(c *gin.Context) {
+	var input request.RegisterRequest
+	db := c.MustGet("db").(*gorm.DB)
+	user := models.User{}
 
-// }
+	err := c.ShouldBindJSON(&input)
+
+	//check if binding returning error
+	if err != nil {
+		for _, err := range err.(validator.ValidationErrors) {
+			errorMessage := fmt.Sprintf("Error on field %s, condition %s", err.Field(), err.ActualTag())
+			c.JSON(http.StatusBadRequest, errorMessage)
+			return
+		}
+	}
+
+	// find user in database
+
+	foundUser, findUserError := repository.GetUserByEmail(user, input.Email, db)
+
+	if findUserError != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "User not registered",
+		})
+		return
+	}
+
+	// compare password
+	isPasswordValid := helpers.ComparePassword(input.Password, foundUser.Password)
+
+	if isPasswordValid == false {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid Password",
+		})
+		return
+	}
+
+	// generate jwt token
+
+	token, generateError := helpers.GenerateToken(foundUser.ID, foundUser.Email)
+
+	if generateError != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid Password",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Login Success",
+		"token":   token,
+	})
+
+}

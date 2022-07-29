@@ -8,4 +8,5 @@ import (
 
 func routerV1(r *gin.RouterGroup) {
 	r.POST("/register", handler.Register)
+	r.POST("/login", handler.Login)
 }
