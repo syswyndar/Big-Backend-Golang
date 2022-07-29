@@ -42,12 +42,15 @@ func Register(c *gin.Context) {
 	// create data to database
 	user, createUserError := repository.CreateUser(input, db)
 
+	// check if create data to database error
 	if createUserError != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": createUserError,
 		})
 		return
 	}
+
+	// create custom response because  models.User have sensitive data
 	result := models.User{
 		ID:         user.ID,
 		Email:      user.Email,
@@ -61,3 +64,8 @@ func Register(c *gin.Context) {
 		"data":    result,
 	})
 }
+
+// func Login (c *gin.Context) {
+// 	var input request.RegisterRequest
+
+// }

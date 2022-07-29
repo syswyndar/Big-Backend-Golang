@@ -6,15 +6,14 @@ import (
 	"gorm.io/gorm"
 )
 
-// type UserRepository interface {
-// 	FindAll(db *gorm.DB) ([]models.User, error)
-// 	FindById(Id int, db *gorm.DB) (models.User, error)
-// 	CreateUser(user models.User, db *gorm.DB) (models.User, error)
-// 	DeleteById(Id int, db *gorm.DB) (models.User, error)
-// }
-
 func CreateUser(user models.User, db *gorm.DB) (models.User, error) {
 	err := db.Create(&user).Error
+
+	return user, err
+}
+
+func GetUserByEmail(user models.User, email string, db *gorm.DB) (models.User, error) {
+	err := db.First(&user, "email = ?", email).Error
 
 	return user, err
 }
