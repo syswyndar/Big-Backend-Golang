@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -33,5 +34,6 @@ func DecodeToken(token string) int {
 	jwt.ParseWithClaims(token, claim, func(t *jwt.Token) (interface{}, error) {
 		return []byte("thisissecretkey"), nil
 	})
+	fmt.Println(claim, "ini data claim")
 	return claim.ID
 }

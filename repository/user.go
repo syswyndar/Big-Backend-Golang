@@ -17,3 +17,9 @@ func GetUserByEmail(user models.User, email string, db *gorm.DB) (models.User, e
 
 	return user, err
 }
+
+func GetUserByID(user models.User, Id int, db *gorm.DB) (models.User, error) {
+	err := db.First(&user, "ID = ?", Id).Error
+
+	return user, err
+}

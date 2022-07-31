@@ -39,6 +39,7 @@ func Register(c *gin.Context) {
 
 	// change password from input user with hashed password
 	input.Password = hashPassword
+	input.Role = "Admin"
 
 	// create data to database
 	user, createUserError := repository.CreateUser(input, db)
@@ -55,6 +56,7 @@ func Register(c *gin.Context) {
 	result := models.User{
 		ID:         user.ID,
 		Email:      user.Email,
+		Role:       user.Role,
 		Created_at: user.Created_at,
 		Updated_at: user.Created_at,
 		Deleted_at: user.Deleted_at,
