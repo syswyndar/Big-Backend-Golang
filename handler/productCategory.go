@@ -6,6 +6,7 @@ import (
 	"Big-Backend-Golang/request"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -68,5 +69,34 @@ func FindAllCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "find all category success",
 		"data":    categories,
+	})
+}
+
+func FindCategoryById(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	Id, err := strconv.Atoi(c.Param("id"))
+
+	// check if user doesn't send id param
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Id param is required",
+		})
+	}
+
+	// find data category in database
+	category, findingError := repository.FindCategoryById(models.Category_Product{}, db, Id)
+
+	// check if error finding data
+	if findingError != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Category with Id: " + strconv.Itoa(Id) + " is not found",
+		})
+		return
+	}
+
+	// send response to frontend if finding data success
+	c.JSON(http.StatusOK, gin.H{
+		"message": "find category by id success",
+		"data":    category,
 	})
 }

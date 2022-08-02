@@ -15,6 +15,7 @@ func AdminV1(r *gin.RouterGroup) {
 	r.Use(middleware.Authentication)
 	r.POST("/categories", middleware.AdminAuthorization, handler.CreateCategory)
 	r.GET("/categories", handler.FindAllCategory)
+	r.GET("/categories/:id", handler.FindCategoryById)
 	r.POST("/products", middleware.AdminAuthorization, middleware.UploadImage, handler.CreateProduct)
 	r.GET("/products", handler.FindAllProduct)
 	r.GET("/products/:id", handler.FindProductById)

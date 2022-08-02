@@ -18,3 +18,8 @@ func FindAllCategory(category models.Category_Product, db *gorm.DB) ([]models.Ca
 
 	return categoryArr, err
 }
+
+func FindCategoryById(category models.Category_Product, db *gorm.DB, Id int) (models.Category_Product, error) {
+	err := db.First(&category, Id).Error
+	return category, err
+}
