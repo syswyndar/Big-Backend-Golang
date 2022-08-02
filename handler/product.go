@@ -85,3 +85,32 @@ func FindAllProduct(c *gin.Context) {
 		"data":    product,
 	})
 }
+
+func FindProductById(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	Id, err := strconv.Atoi(c.Param("id")) // get id param and convert type data from string to int
+
+	// check if user doesn't send id in req.param
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "id param is required",
+		})
+	}
+
+	// find product in database
+	product, findingError := repository.FindProductById(models.Product{}, db, Id)
+
+	// check if finding data in database error
+	if findingError != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "Product with Id: " + strconv.Itoa(Id) + " is not found",
+		})
+		return
+	}
+
+	// send response data to frontend if success find product
+	c.JSON(http.StatusOK, gin.H{
+		"message": "find product by id Success",
+		"data":    product,
+	})
+}

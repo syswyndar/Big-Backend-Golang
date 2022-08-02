@@ -19,3 +19,8 @@ func FindAllProduct(product models.Product, db *gorm.DB) ([]models.Product, erro
 
 	return productArr, err
 }
+
+func FindProductById(product models.Product, db *gorm.DB, Id int) (models.Product, error) {
+	err := db.Preload(clause.Associations).First(&product, Id).Error
+	return product, err
+}
