@@ -4,6 +4,7 @@ import (
 	"Big-Backend-Golang/models"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func CreateProduct(product models.Product, db *gorm.DB) (models.Product, error) {
@@ -14,6 +15,7 @@ func CreateProduct(product models.Product, db *gorm.DB) (models.Product, error) 
 
 func FindAllProduct(product models.Product, db *gorm.DB) ([]models.Product, error) {
 	var productArr []models.Product
-	err := db.Find(&productArr).Error
+	err := db.Preload(clause.Associations).Find(&productArr).Error
+
 	return productArr, err
 }

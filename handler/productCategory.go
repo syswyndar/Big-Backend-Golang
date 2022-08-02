@@ -49,3 +49,24 @@ func CreateCategory(c *gin.Context) {
 	})
 
 }
+
+func FindAllCategory(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+
+	model := models.Category_Product{}
+
+	// find all category in database
+	categories, findingError := repository.FindAllCategory(model, db)
+
+	if findingError != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": findingError,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "find all category success",
+		"data":    categories,
+	})
+}
