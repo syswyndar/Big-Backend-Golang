@@ -1,0 +1,23 @@
+FROM golang:latest
+
+WORKDIR /app
+
+COPY go.mod .
+
+COPY go.sum .
+
+RUN go mod download
+
+COPY . .
+
+ENV PORT 8080
+ENV AWS_SECRET_KEY_ID  AKIA4DEZYXRXU2NAPOFM
+ENV AWS_SECRET_ACCESS_KEY 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 
+ENV S3_BUCKET ecommerce-golang
+ENV AWS_REGION ap-southeast-1
+ENV IMAGE_KIT_PUBLIC_KEY public_2XWI0d2N+j5grdtCEBmSDHuDY9A=
+ENV IMAGE_KIT_SECRET_KEY private_2FcagU3s1z6YuKgpyTg2lsPm2lQ=
+
+RUN go build
+
+CMD ["./Big-Backend-Golang"]

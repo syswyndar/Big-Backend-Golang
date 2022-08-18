@@ -3,7 +3,9 @@ package main
 import (
 	"Big-Backend-Golang/config"
 	"Big-Backend-Golang/router"
+	"fmt"
 	"log"
+	"os"
 
 	// "Big-Backend-Golang/config"
 	// "Big-Backend-Golang/router"
@@ -14,6 +16,8 @@ import (
 
 func main() {
 	err := godotenv.Load()
+	port := ":" + os.Getenv("PORT")
+	fmt.Println(port)
 
 	if err != nil {
 		log.Fatal("can't load file .env")
@@ -23,5 +27,5 @@ func main() {
 	connection := config.Connection()
 	r := router.MainRouter(connection)
 
-	r.Run()
+	r.Run(port)
 }

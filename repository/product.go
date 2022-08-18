@@ -24,3 +24,13 @@ func FindProductById(product models.Product, db *gorm.DB, Id int) (models.Produc
 	err := db.Preload(clause.Associations).First(&product, Id).Error
 	return product, err
 }
+
+func UpdateProduct(product models.Product, db *gorm.DB, id int) (models.Product, error) {
+	err := db.Save(&product).Error
+	return product, err
+}
+
+func DeleteProduct(product models.Product, db *gorm.DB, Id int) (models.Product, error) {
+	err := db.Delete(&product, Id).Error
+	return product, err
+}
